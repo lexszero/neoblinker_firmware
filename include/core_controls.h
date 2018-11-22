@@ -20,8 +20,13 @@ public:
 	{}
 
 	Type& operator=(const Type& newval) {
-		set(newval);
+		set(newval, true, true);
 		return value;
+	}
+
+	GenericControl<Type>& operator=(const GenericControl<Type>& src) {
+		set(src.value, true, true);
+		return *this;
 	}
 
 	operator Type&() {
@@ -32,19 +37,14 @@ public:
 		json[name] = value;
 	}
 
-protected:
-	virtual void set(const Type& newval, bool publish) {
-		if (setter)
+	virtual void set(const Type& newval, bool publish = true, bool call = true) {
+		if (call && setter)
 			setter(newval);
 		value = newval;
 		if (publish)
 			mqttPublish();
 	}
-
-	virtual void set(const Type& newval) {
-		set(newval, true);
-	}
-
+protected:
 	Type value;
 	Setter setter;
 };
@@ -55,6 +55,7 @@ public:
 	using GenericControl<Type>::GenericControl;
 	using GenericControl<Type>::operator=;
 	using GenericControl<Type>::operator Type&;
+	using GenericControl<Type>::set;
 
 	virtual String toString() {
 		return String(this->value);
