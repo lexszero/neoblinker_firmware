@@ -12,19 +12,24 @@ static Ticker reconnect_timer;
 
 static void onConnect(const WiFiEventStationModeGotIP& event) {
 	log("connected");
+	if (Core::onConnect)
+		Core::onConnect();
 }
 
 static void onDisconnect(const WiFiEventStationModeDisconnected& event) {
 	log("disconnected");
 	MQTT::reconnect_timer.detach();
 	reconnect_timer.once(2, connect);
+	if (Core::onDisconnect)
+		Core::onDisconnect();
 }
 
 void wifiManager_configModeCallback(WiFiManager *wifiManager) {
 	log("entered config mode");
 	logval("SSID", wifiManager->getConfigPortalSSID());
 	logval("IP", ::WiFi.softAPIP());
-	onConfigMode();
+	if (Core::onConfigMode)
+		Core::onConfigMode();
 }
 
 void wifiManager_saveConfigCallback() {

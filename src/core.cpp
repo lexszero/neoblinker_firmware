@@ -7,6 +7,8 @@
 
 namespace Core {
 
+HandlerFn onConnect, onDisconnect, onConfigMode;
+
 static void setup_spiffs() {
 	log("initializing SPIFFS");
 

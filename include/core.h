@@ -34,12 +34,16 @@ public:
 extern Controls controls;
 
 namespace Core {
+	using HandlerFn = std::function<void()>;
+
 	/* Basic API */
 	void setup_base();
 	void setup();
 	void loop();
 
-	extern void onConfigMode();
+	extern HandlerFn onConfigMode;
+	extern HandlerFn onConnect;
+	extern HandlerFn onDisconnect;
 
 	namespace Web {
 		extern ESP8266WebServer server;
