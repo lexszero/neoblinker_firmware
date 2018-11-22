@@ -88,35 +88,32 @@ void segments_sync(uint8_t seg, std::function<void(Controls::Segment&)> func) {
 }
 
 /* Artnet */
-static void onDmxFrame(uint16_t universe, uint16_t length, uint8_t sequence, uint8_t* data, IPAddress remoteIP)
-{
-	static int previousDataLength = 0;
-
-	Serial.println("DMX frame");
-	// read universe and put into the right part of the display buffer
-	for (int i = 0; i < length / 3; i++)
-	{
-		int led = i + (universe - config.artnet_universe) * (previousDataLength / 3);
-		if (led < LED_COUNT) {
-			leds.setPixelColor(led, RgbColor(data[i * 3], data[i * 3 + 1], data[i * 3 + 2]));
-		}
-		else {
-			break;
-		}
-	}
-	previousDataLength = length;
-	strip.Show();
-}
-
-void artnet_init()
-{
+void artnet_init() {
 	artnet.begin();
 	auto ip = WiFi.localIP();
 	static uint8_t broadcast[4] = {
 		ip[0], ip[1], ip[2], 255
 	};
 	artnet.setBroadcast(broadcast);
-	artnet.setArtDmxCallback(onDmxFrame);
+	artnet.setArtDmxCallback(
+		[] (uint16_t universe, uint16_t length, uint8_t sequence, uint8_t* data, IPAddress remoteIP) {
+			static int prev_len = 0;
+		
+			log("DMX frame");
+			// read universe and put into the right part of the display buffer
+			for (int i = 0; i < length / 3; i++)
+			{
+				int led = i + (universe - config.artnet_universe) * (prev_len / 3);
+				if (led < LED_COUNT) {
+					leds.setPixelColor(led, RgbColor(data[i * 3], data[i * 3 + 1], data[i * 3 + 2]));
+				}
+				else {
+					break;
+				}
+			}
+			prev_len = length;
+			strip.Show();
+		});
 }
 
 /* Controls */
@@ -232,6 +229,7 @@ void setup()
 #endif
 
 	leds_init();
+	artnet_init();
 
 	Core::onConfigMode = []() {
 		board_led_blink(0.2);
@@ -249,8 +247,6 @@ void setup()
 	Core::onDisconnect = []() {
 		board_led_blink(0.1);
 	};
-
-	artnet_init();
 
 	Core::setup();
 }
