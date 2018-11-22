@@ -153,15 +153,6 @@ Controls::Segment::Segment(const std::string&& prefix, uint8_t _id) :
 
 struct Controls controls;
 
-void Core::onConfigMode() {
-	led_blink(0.2);
-	uint16_t i;
-	for (i = 0; i < leds.numPixels(); i++) {
-		leds.setPixelColor(i, 0, 0, 255);
-	}
-	leds.show();
-}
-
 void setup()
 {
 	Core::setup_base();
@@ -174,6 +165,25 @@ void setup()
 #endif
 
 	led_init();
+
+	 Core::onConfigMode = []( {
+		led_blink(0.2);
+		uint16_t i;
+		for (i = 0; i < leds.numPixels(); i++) {
+			leds.setPixelColor(i, 0, 0, 255);
+		}
+		leds.show();
+	};
+
+	Core::onConnect = []() {
+		led_blink(1);
+	};
+
+	Core::onDisconnect = []() {
+		led_blink(0.1);
+	};
+
+
 	artnet_init();
 
 	Core::setup();
