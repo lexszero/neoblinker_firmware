@@ -19,8 +19,6 @@
 #define debug(...)
 #endif
 
-uint16_t convertSpeed(uint8_t mcl_speed);
-void animate(int sec);
 String formatBytes(size_t bytes);
 
 size_t eeprom_read(int offset, void *buf, size_t len);
