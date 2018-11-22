@@ -4,7 +4,9 @@
 #define LED_COLOR_ORDER GRB
 #define LED_COUNT 32
 
-#ifdef BOARD_SONOFF
+#define HARDWARE_SONOFF
+
+#ifdef HARDWARE_SONOFF
 #define BOARD_LED 13
 #define BOARD_RELAY 12
 #define BOARD_BUTTON 0
