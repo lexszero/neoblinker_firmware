@@ -88,10 +88,10 @@ void setup() {
 #else
 void setup() {
 	log("connecting to %s", config.wifi_ssid);
-	WiFi.mode(WIFI_STA);
+	::WiFi.mode(WIFI_STA);
 	wifi_setup_basic();
-	WiFi.begin(config.wifi_ssid, config.wifi_pass);
-	while (WiFi.status() != WL_CONNECTED) {
+	::WiFi.begin(config.wifi_ssid, config.wifi_pass);
+	while (::WiFi.status() != WL_CONNECTED) {
 		_log(".");
 		delay(500);
 	}

@@ -89,10 +89,12 @@ void setup() {
 void loop() {
 	Web::server.handleClient();
 	if (::WiFi.status() == WL_CONNECTED) {
-		if (!MQTT::mqtt.connected()) {
-			MQTT::connect();
-		} else {
-			MQTT::mqtt.loop();
+		if (strlen(config.mqtt_host) > 0) {
+			if (!MQTT::mqtt.connected()) {
+				MQTT::connect();
+			} else {
+				MQTT::mqtt.loop();
+			}
 		}
 	}
 }

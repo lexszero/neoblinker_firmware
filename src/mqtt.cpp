@@ -144,8 +144,10 @@ static void mqtt_callback(char *topic, uint8_t *payload,  unsigned int len) {
 
 void setup() {
 	log("mqtt setup");
-	mqtt.setServer(config.mqtt_host, atoi(config.mqtt_port));
-	mqtt.setCallback(mqtt_callback);
+	if (config.mqtt_host != "" && config.mqtt_port != "") {
+		mqtt.setServer(config.mqtt_host, atoi(config.mqtt_port));
+		mqtt.setCallback(mqtt_callback);
+	}
 }
 
 }}	// namespace Core::MQTT
