@@ -126,7 +126,7 @@ Controls::Controls() :
 			digitalWrite(BOARD_RELAY, val);
 		}),
 #endif
-	artnet("artnet", "ArtNet enabled", 5, false,
+	artnet("artnet", "ArtNet enabled", 5, true,
 		[](bool val) {
 			log("artnet = %d", val);
 		}),
